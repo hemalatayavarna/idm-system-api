@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+<db:config name="IDM_Database_Config" doc:name="Database Config" doc:id="58c62b2e-769a-4a17-aa03-ce5aff6b5d23" >
+		<db:mssql-connection host="${idm.db.host}" port="${idm.db.port}" user="${secure::idm.db.username}" password="${secure::idm.db.password}" databaseName="${idm.db.name}" >
+			<reconnection >
+				<reconnect frequency="${idm.db.reconnection.frequency}" count="${idm.db.reconnection.attempts}" />
+			</reconnection>
+		</db:mssql-connection>
+	</db:config>
+
+	<configuration-properties doc:name="Configuration properties" doc:id="7f286182-4751-45b8-9207-62ecb5aad711" file="config\app-config-${env}.properties" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="a1710ebf-158f-4f40-8fed-6e85d416e693" file="config\app-config-${env}.properties" key="${secure.key}">
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<configuration-properties doc:name="Global_Configuration properties" doc:id="90cdf699-1752-4806-92a7-017d6ac95e12" file="config/app-config-global.properties" />
+	<secure-properties:config name="Global_Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="29fd0998-434f-4306-b974-6f2c8fd7adf7" file="config/app-config-global.properties" key="${secure.key}">
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<api-gateway:autodiscovery apiId="${api.autodiscovery.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="afc62269-169c-45ff-aa1c-ed1c87546e6b" flowRef="idm-db-system-api-main" />
+<http:request-config name="error-audit-system-api-httpRequesterConfig"
+                     doc:name="HTTP Request configuration"
+                     doc:id="670085e0-6ad3-4d50-bb7b-6b63f2b30715"
+                     basePath="${error.sys.api.basepath}"
+                     responseTimeout="${error.sys.api.response.timeout}">
+    <http:request-connection protocol="${error.sys.api.protocol}"
+                             host="${error.sys.api.host}"
+                             port="${error.sys.api.port}"
+                             maxConnections="${error.sys.api.maxconnections}"
+                             connectionIdleTimeout="${error.sys.api.timeout}"
+                             responseBufferSize="${error.sys.api.bufferSize}">
+        <reconnection>
+            <reconnect frequency="${error.sys.reconnection.frequency}"
+                       count="${error.sys.reconnection.attempts}"/>
+        </reconnection>
+        <tls:context>
+            <tls:trust-store insecure="true"/>
+        </tls:context>
+    </http:request-connection>
+</http:request-config>
+
+
+</mule>
+	

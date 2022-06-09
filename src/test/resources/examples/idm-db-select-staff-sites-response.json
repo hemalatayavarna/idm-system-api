@@ -1,0 +1,42 @@
+[
+	{
+		"EmployeeID": "0116126",
+		"Firstnames": "Robyn Judith",
+		"Lastname": "Fairlie",
+		"Preferredname": "Robyn",
+		"Title": "Ms",
+		"WorkEmail1": "",
+		"WorkPhone": "",
+		"WorkMobile": "",
+		"PositionCode": null,
+		"PositionTitle": null,
+		"MainRoleCode": "STCH",
+		"MainRoleName": "School Teacher",
+		"GenderCode": "F",
+		"IsTemp": 0,
+		"MainSiteID": "9996",
+		"MainSiteName": "Education Centre",
+		"IsDept": true,
+		"IsActive": 1
+	},
+	{
+		"EmployeeID": "0162309",
+		"Firstnames": "Anne Doreen",
+		"Lastname": "Franks",
+		"Preferredname": "Anne",
+		"Title": "Ms",
+		"WorkEmail1": "anne.franks@sollyr7.sa.edu.au",
+		"WorkPhone": "",
+		"WorkMobile": "",
+		"PositionCode": null,
+		"PositionTitle": null,
+		"MainRoleCode": "STCH",
+		"MainRoleName": "School Teacher",
+		"GenderCode": "F",
+		"IsTemp": 0,
+		"MainSiteID": "9996",
+		"MainSiteName": "Education Centre",
+		"IsDept": true,
+		"IsActive": 1
+	}
+]

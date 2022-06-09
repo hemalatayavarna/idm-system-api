@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="impl-common-connectors:set-attributes-headers:subflow" doc:id="5ac9136c-0333-4a47-a917-3f671da19e80" >
+		<ee:transform doc:name="Set Variables: lastUpdatedOn,offset, limit, page, format, orgUnitId" doc:id="edb3af43-32d7-40fd-92ce-928ef91b8a35">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="page"><![CDATA[%dw 2.0
+import p from Mule
+output application/java
+---
+trim(attributes.queryParams.page) as Number default p('default.pagination.page')
+]]></ee:set-variable>
+				<ee:set-variable variableName="limit"><![CDATA[%dw 2.0
+import p from Mule
+output application/java
+---
+trim(attributes.queryParams.limit) as Number default p('default.pagination.limit')]]></ee:set-variable>
+				<ee:set-variable variableName="offset"><![CDATA[%dw 2.0
+import p from Mule
+output application/java
+---
+(trim(attributes.queryParams.page) - 1)*trim(attributes.queryParams.limit) default p('default.pagination.offset')]]></ee:set-variable>
+				<ee:set-variable variableName="format"><![CDATA[%dw 2.0
+output application/java
+import p from Mule
+---
+if ( attributes.headers.'Accept' == p('accept.contentType.csv') )
+	p('response.contentType.csv')
+else 
+	p('response.contentType.json')
+]]></ee:set-variable>
+				<ee:set-variable variableName="orgUnitId"><![CDATA[%dw 2.0
+import p from Mule
+output application/java
+---
+attributes.queryParams.'org-unit-id' default p('constant.value.Org_Unit_ID')]]></ee:set-variable>
+				<ee:set-variable variableName="status"><![CDATA[%dw 2.0
+import p from Mule
+output application/java
+---
+if(attributes.queryParams.status == p('staff.status.active')) p('staff.active')
+else if (attributes.queryParams.status == p('staff.status.inactive')) p('staff.inactive')
+else p('constant.value.IsActive')]]></ee:set-variable>
+				<ee:set-variable variableName="lastUpdatedOn" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.queryParams.'last-updated-on' as Date default p('constant.value.Last_Changed_Date')]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+
+	</sub-flow>
+</mule>

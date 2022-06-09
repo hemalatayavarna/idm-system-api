@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="api-kit-error-handler">
+		<on-error-propagate type="APIKIT:BAD_REQUEST">
+			<ee:transform
+				xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:name="Set Bad Request Error Message Payload">
+				<ee:message>
+					<ee:set-payload resource="dwl/error-400.dwl"/>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Bad Request Error"
+				doc:id="d15b6e05-4247-4eb9-8c55-5b41cd07488b"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="0f345213-b11c-4188-a5ab-36c9e0371bbe" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:NOT_FOUND">
+			<ee:transform
+				xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:name="Set Not Found Error Message Payload">
+				<ee:message>
+					<ee:set-payload resource="dwl/error-404.dwl"/>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Not Found Error"
+				doc:id="812a0c6b-7058-4e63-947c-965f87b7e742"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="f5f2a853-18b6-4696-8533-cc5d6f304aaa" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+
+		</on-error-propagate>
+		<on-error-propagate
+			type="APIKIT:METHOD_NOT_ALLOWED">
+			<ee:transform
+				xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:name="Set Not Allowed Error Message Payload">
+				<ee:message>
+					<ee:set-payload resource="dwl/error-405.dwl"/>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Method Not Allowed Error"
+				doc:id="64951f43-c874-4a2c-be22-d77389834a1a"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="cc026707-bf71-4a33-ba63-7d33d28b90f7" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+			<ee:transform
+				xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:name="Set Not Acceptable Error Message Payload">
+				<ee:message>
+					<ee:set-payload resource="dwl/error-406.dwl"/>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[406]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Not Acceptable Error"
+				doc:id="9430eb1c-3673-4504-ba74-c5eeac7e80c3"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="0f6e5926-4517-4718-a239-a31b9fcae2db" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+
+		</on-error-propagate>
+		<on-error-propagate
+			type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform
+				xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:name="Set Unsupportive Media Type Error Message Payload">
+				<ee:message>
+					<ee:set-payload resource="dwl/error-415.dwl"/>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR"
+				doc:name="Unsupported Media Type Error"
+				doc:id="041e51c2-6aac-4deb-a6be-5d043c425fcf"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="066e8921-4c39-40e6-ac94-2d5ba70ec851" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+			<ee:transform
+				xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+				xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+				doc:name="Set Not Implemented Error Message Payload">
+				<ee:message>
+					<ee:set-payload resource="dwl/error-501.dwl"/>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Not Implemented Error"
+				doc:id="571c06a7-5226-4734-a96d-4e50678eb2d2"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="a5638f48-b499-47e6-bb99-58d154ad0e65" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true"
+			logException="true" doc:name="On Error Propagate"
+			doc:id="793d42dc-1498-41ac-821e-ba36c351b09e">
+			<ee:transform
+				doc:name="Set Internal Server Error Message Payload"
+				doc:id="0efd5a5a-3435-457d-9c03-7d15bb92f771">
+				<ee:message>
+					<ee:set-payload resource="dwl/error-500.dwl"/>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Unhandled Error"
+				doc:id="a6057a32-c270-4f67-82fd-7d35b16abb2c"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="0099438f-b25b-4411-8e52-368fa058089b" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+		</on-error-propagate>
+
+	</error-handler>
+	<error-handler name="business-error-handler"
+		doc:id="ce41872f-5835-46de-a9bf-dc15a6f1799e">
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="30fe359b-ebc1-43d2-a754-329de384cb4e" type="DB:CONNECTIVITY">
+			<ee:transform
+				doc:name="Set DB Connectivity Error message Payload"
+				doc:id="36a86978-710f-4396-a5c8-9f6a8b54c4e9">
+				<ee:message>
+					<ee:set-payload resource="dwl/business-error.dwl"/>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR"
+				doc:name="DB Connectivity Error Message"
+				doc:id="9887d580-e57b-4d6b-9986-abe48e081afa"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="3af9912c-d6d9-4ec2-939b-cad58b00e6ab" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="bc3e5871-5996-4d57-ba11-36b444e4b832" type="EXPRESSION">
+			<ee:transform
+				doc:name="Set Mule Expression Error message Payload"
+				doc:id="22337722-a095-4514-b9d1-f76e70094ec5">
+				<ee:message>
+					<ee:set-payload resource="dwl/business-error.dwl"/>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Expression Error Message"
+				doc:id="51b3c5ca-fb72-4678-add1-d957a9ea1aca"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="c99eddd2-b9d6-4984-b3e1-398293fb5eab" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="083b5de1-832a-4873-b12a-d5a7c125ed2f"
+			when='#[(error.errorType.identifier=="RESOURCE_NOT_FOUND") and (error.errorType.namespace=="BUSINESS")]'>
+			<ee:transform
+				doc:name="Set Response not Found Error message Payload"
+				doc:id="1214a628-d181-4d06-9b64-caf64d5b450e">
+				<ee:message>
+					<ee:set-payload resource="dwl/business-error.dwl"/>
+				</ee:message>
+			</ee:transform>
+			<logger level="ERROR"
+				doc:name="Response Not Found Error Message"
+				doc:id="3a22fdd0-55a0-48ae-b313-b9e109e83e8a"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="b5d194a5-f054-4413-bcb4-c28527a7b298" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true"
+			logException="true" doc:name="On Error Continue"
+			doc:id="d3185a0a-61fa-4f9c-a4b1-a4cc4bb5e148" type="ANY">
+			<ee:transform doc:name="Set Any Error message Payload"
+				doc:id="d98e9589-c3f2-48ac-8015-dbb486ee44e8">
+				<ee:message>
+					<ee:set-payload resource="dwl/business-error.dwl" />				
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Generic Error Message"
+				doc:id="ea859bce-3609-4fc2-9aab-379bdc98fa91"
+				message="Propagate Error: #[payload]" />
+			<flow-ref doc:name="impl-send-error:format-error-notification:subflow" doc:id="154fcd15-9792-4d42-8c93-45adb5f42909" name="impl-send-error:format-error-notification:subflow" target="errorNotification"/>
+		</on-error-continue>
+	</error-handler>
+
+</mule>

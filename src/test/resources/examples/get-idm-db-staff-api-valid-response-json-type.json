@@ -1,0 +1,88 @@
+[
+  {
+    "employeeId": "0287590",
+    "firstName": "Graham Ronald",
+    "lastName": "Brand",
+    "preferredName": "Graham",
+    "salutation": "Mr",
+    "workEmail": "",
+    "workPhone": "",
+    "workMobile": "",
+    "mainPositionId": "0783TCH",
+    "mainPositionName": "Teacher",
+    "mainRoleId": "STCH",
+    "mainRoleName": "School Teacher",
+    "gender": "Male",
+    "isExternal": false,
+    "mainOrgUnitId": "0783",
+    "mainOrgUnitName": "Mount Barker High School",
+    "isDepartmentScope": true,
+    "isActive": true,
+    "lastUpdatedOn": "2021-03-19T11:39:12.153",
+    "roles": [
+      {
+        "roleName": "",
+        "positionName": "Teacher",
+        "orgUnitId": "0783",
+        "orgUnitName": "Mount Barker High School",
+        "orgStartDate": "2011-01-27T00:00:00",
+        "orgEndDate": "",
+        "isMainSite": true,
+        "idesLastUpdatedOn": "2016-08-09T10:41:08.217"
+      },
+      {
+        "roleName": "",
+        "positionName": "Education Centre",
+        "orgUnitId": "9996",
+        "orgUnitName": "Education Centre",
+        "orgStartDate": "2015-07-16T00:00:00",
+        "orgEndDate": "2015-08-03T00:00:00",
+        "isMainSite": false,
+        "idesLastUpdatedOn": "2016-03-22T15:52:34.787"
+      }
+    ]
+  },
+  {
+    "employeeId": "0434175",
+    "firstName": "David Trent",
+    "lastName": "English",
+    "preferredName": "Trent",
+    "salutation": "Mr",
+    "workEmail": "",
+    "workPhone": "",
+    "workMobile": "0430338700",
+    "mainPositionId": "0783TCH",
+    "mainPositionName": "Teacher",
+    "mainRoleId": "STCH",
+    "mainRoleName": "School Teacher",
+    "gender": "Male",
+    "isExternal": false,
+    "mainOrgUnitId": "0783",
+    "mainOrgUnitName": "Mount Barker High School",
+    "isDepartmentScope": true,
+    "isActive": true,
+    "lastUpdatedOn": "2021-03-19T11:39:12.153",
+    "roles": [
+      {
+        "roleName": "",
+        "positionName": "Teacher",
+        "orgUnitId": "0783",
+        "orgUnitName": "Mount Barker High School",
+        "orgStartDate": "2011-01-27T00:00:00",
+        "orgEndDate": "",
+        "isMainSite": true,
+        "idesLastUpdatedOn": "2016-08-09T10:41:08.217"
+      },
+      {
+        "roleName": "",
+        "positionName": "Teacher",
+        "orgUnitId": "7049",
+        "orgUnitName": "Secondary School Sport SA",
+        "orgStartDate": "2014-01-11T00:00:00",
+        "orgEndDate": "2018-01-24T00:00:00",
+        "isMainSite": false,
+        "idesLastUpdatedOn": "2016-03-22T15:52:34.787"
+      }
+    ]
+  }
+]

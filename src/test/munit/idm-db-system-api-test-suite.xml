@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="idm-db-test-suite.xml" />
+	<munit:before-test name="idm-db-system-api-unit-testBefore_Test" doc:id="17bfaa4d-eaf5-431f-b3f7-055bbbd2cee4" >
+		<munit-tools:mock-when doc:name="Mock when POST to Error API" doc:id="56b0b828-e98d-4668-b302-ec03a342de18" processor="http:request">
+			<munit-tools:with-attributes >
+				<munit-tools:with-attribute whereValue="POST to Errors Path" attributeName="doc:name" />
+			</munit-tools:with-attributes>
+		</munit-tools:mock-when>
+	</munit:before-test>		
+	<munit:test name="idm-db-system-api-test-suiteTest-get-health:subFlowTest" doc:id="a6d6f1fd-84d1-4490-9ca4-a39558e31d99">
+		<munit:execution >
+			<flow-ref doc:name="get:\health:idm-db-system-api-config" doc:id="2a5dbdf3-166a-461c-b2e2-25a3315d2e1a" name="get:\health:idm-db-system-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="eebb5120-30a1-41de-aeb3-53c9884b7aac" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="idm-db-system-api-test-suite:get-staff:json-type:unit-test" doc:id="0ddc1c1c-a53c-4457-946b-075a97a96302" timeOut="120000000">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when Select Staff Database Call" doc:id="b132ff6e-4a5d-4841-b44a-d4550f2f6598" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select Staff Details" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsString('examples/idm-db-select-staff-response.json')]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="5e3188e6-3ba8-41fd-8f54-5829c4ec2ffb" >
+				<munit:attributes value="#[MunitTools::getResourceAsString('examples/get-idm-db-staff-api-valid-query-params-application-json.json')]" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="get:\staff:idm-db-system-api-config" doc:id="523b6487-0a31-49e5-b80a-771a25adc784" name="get:\staff:idm-db-system-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify End IDM Database Staff" doc:id="4e5217f6-f52b-4fd0-9248-996f7a42dd18" processor="logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="End IDM Database Staff" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify End Staff Implementation" doc:id="ac08175b-a988-4e0f-85f5-e2741646ebf6" processor="logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="End Staff Implementation" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:assert doc:name="Assert Payload is Expected" doc:id="0f75dd94-23d3-47b9-bacf-003f31bbd179" message="Actual response matches with the Expected response">
+				<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+ ---
+payload must equalToResource("examples/get-idm-db-staff-api-valid-response-json-type.json","application/json")]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="idm-db-system-api-test-suite:get-staffs:csv-type:unit-test" doc:id="41a754fe-46af-4cbf-ae51-0055e1a0b2ea">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock when Select Staff Database Call" doc:id="37fc1bd3-1ed3-4a82-87d5-e0f9b317e878" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select Staff Details" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[MunitTools::getResourceAsString('examples/idm-db-select-staff-response.json')]" mediaType="application/json" />
+				</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-event doc:name="Set Event" doc:id="905b531c-74e3-492f-baba-9bd6e59f8ba3">
+				<munit:attributes value="#[MunitTools::getResourceAsString('examples/get-idm-db-staff-api-valid-query-params-application-csv.json')]" mediaType="application/json" />
+				</munit:set-event>
+				<flow-ref doc:name="get:\staff:idm-db-system-api-config" doc:id="cbe93a6d-9479-43cd-9d90-41b8dc35a77c" name="get:\staff:idm-db-system-api-config" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:verify-call doc:name="Verify End IDM Database Staff" doc:id="12d3f606-0530-4a1a-b32a-d6f32d1ad501" processor="logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="End IDM Database Staff" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify End Staff Implementation" doc:id="589abdf0-44a9-46a1-9e08-6e429fdd4052" processor="logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="End Staff Implementation" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				</munit-tools:verify-call>
+			<munit-tools:assert doc:name="Assert Payload is Expected" doc:id="305fb15b-ab74-4570-abf9-91e1a1867988" message="Actual response matches with the Expected response">
+				<munit-tools:that><![CDATA[#[import * from dw::test::Asserts 
+ ---
+payload must equalToResource("examples/get-idm-db-staff-api-valid-response-csv-type.csv","application/csv")]]]></munit-tools:that>
+			</munit-tools:assert>
+			</munit:validation>
+		</munit:test>
+
+
+</mule>

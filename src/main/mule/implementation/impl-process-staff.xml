@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="impl-process-staff-request:get-staff-contact:subflow" doc:id="009e1b0b-b9a5-4dbf-9c05-3465040a4543" >
+		<logger level="INFO" doc:name="Start Staff Implementation" doc:id="53835214-6129-457d-aa15-95d2bec5cabd" message="Start Staff Implementation" />
+		<flow-ref doc:name="impl-common-connectors:set-attributes-headers:subflow" doc:id="84f07468-1cde-4e2a-8e58-ad36f53e9047" name="impl-common-connectors:set-attributes-headers:subflow" />
+		<ee:transform doc:name="Set Variable: sqlQuery, applicationType" doc:id="6756328a-4fd9-4990-b17c-0783ec425156" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="sqlQuery" ><![CDATA[%dw 2.0
+output application/java
+---
+"SELECT DISTINCT IDE.[Employee_ID]
+	,[Title]
+	,[First_Names]
+	,[Last_Name]
+	,[Preferred_Name]
+	,[Gender_ID]
+	,[Main_Org_Unit_ID]
+	,[Main_Role_ID]
+	,[Main_Position_ID]
+	,[Main_Org_Unit_Name]
+	,[Main_Role_Name]
+	,[Main_Position_Name]
+	,[Work_Email_1]
+	,[Work_Phone]
+	,[Work_Mobile]
+	,[IsDepartmentScope]
+	,[IsExternal]
+	,[IsActive]
+	,IDE.[Last_Changed_Date] as IDE_Last_Changed_Date
+	,[Org_Unit_ID]
+    ,[Org_Unit_Name]
+    ,[Role_Name]
+    ,[Position_Name]
+    ,[Org_Start_Date]
+    ,[Org_End_Date]
+    ,[IsMainSite]
+    ,IDES.[Last_Changed_Date] as IDES_Last_Changed_Date
+FROM [dbo].[vw_IDM_INTEGRATION_EMPLOYEE] IDE
+LEFT OUTER JOIN [dbo].[vw_IDM_INTEGRATION_EMPLOYEE_SITE] IDES ON IDE.Employee_ID = IDES.Employee_ID
+WHERE IDE.[Last_Changed_Date] >= $(vars.lastUpdatedOn)
+AND [IsActive] = $(vars.status)
+AND [Main_Org_Unit_ID] = $(vars.orgUnitId)
+ORDER BY [Employee_ID]
+OFFSET $(vars.offset) ROWS FETCH NEXT $(vars.limit) ROWS ONLY"]]></ee:set-variable>
+				<ee:set-variable variableName="applicationContentType" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.headers.'content-type']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="sys-idm-database:get-staff:subflow" doc:id="d6695282-c4f9-473e-afc3-61b18e97ae0b" name="sys-idm-database:get-staff:subflow" />
+		<choice doc:name="Choice" doc:id="433eb003-31c1-4e81-b300-18a7f0e79d7c" >
+			<when expression="#[vars.applicationContentType==p('accept.contentType.csv')]">
+				<ee:transform doc:name="Set Payload" doc:id="e5eebb1f-25e0-4294-a0dc-1e1a7a442020">
+			<ee:message>
+						<ee:set-payload resource="dwl/cdm-staff-csv-payload.dwl" />
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="readDWLFile"><![CDATA[%dw 2.0
+output application/java
+var fileName="modules/$(vars.format).dwl"
+---
+readUrl("classpath://" ++ fileName, 'text/plain')]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Set Payload" doc:id="633136e5-f3a4-4927-a2c2-fc29404824f0" >
+					<ee:message >
+						<ee:set-payload resource="dwl/cdm-staff-json-payload.dwl" />
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="End Staff Implementation" doc:id="22c2683c-7fde-4d95-acd6-022780a123c8" message="End Staff Implementation" />
+	</sub-flow>
+</mule>

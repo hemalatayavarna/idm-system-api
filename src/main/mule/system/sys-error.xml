@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="sys-error:send-error:subflow" doc:id="166deaac-4d95-4259-8331-a05dcde71eb2" >
+		<logger level="INFO" doc:name="Start Send Error" doc:id="0758b46f-66b2-418c-bb7f-56d53a31b45e" message="Start Send Error"/>
+		<ee:transform doc:name="Set Variable: headers" doc:id="8884f2e7-c74f-4bcf-8355-2021e7cde702" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="headers" ><![CDATA[%dw 2.0
+output application/java
+---	
+{
+	"X-Client-Id": Mule::p('secure::client.id'),
+	"X-Client-Secret": Mule::p('secure::client.secret')
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<http:request method="POST" doc:name="POST to Errors Path" doc:id="7f6a1f29-a473-4cf2-a14d-9f7237d53a1d" config-ref="error-audit-system-api-httpRequesterConfig" path="${error.sys.api.errors.path}" sendCorrelationId="ALWAYS">
+			<http:headers ><![CDATA[#[vars.headers]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="End Send Error" doc:id="c0bd987d-bc7a-4baa-ba08-d1fd5a3fc663" message="End Send Error" />
+	</sub-flow>
+</mule>

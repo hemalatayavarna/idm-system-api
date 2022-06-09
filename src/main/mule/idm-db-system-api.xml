@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+    <apikit:config name="idm-db-system-api-config" api="resource::e158212d-36c8-4172-830d-4c8c71836894:idm-db-system-api:1.0.1:raml:zip:idm-db-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <http:listener-config name="idm-system-api-httpListenerConfig">
+        <http:listener-connection host="${https.private.host}" port="${https.private.port}" readTimeout="${http.read.timeout}" connectionIdleTimeout="${http.connection.idle.timeout}" protocol="HTTPS">
+            <tls:context>
+                <tls:trust-store insecure="true" />
+                <tls:key-store type="jks" path="${https.keystore.path}" keyPassword="${secure::https.keystore.key.password}" password="${secure::https.keystore.store.password}" />
+            </tls:context>
+        </http:listener-connection>
+    </http:listener-config>
+    <flow name="idm-db-system-api-main" doc:id="efa2a767-9dbc-4465-9fc6-7cae6df9bc3a">
+        <http:listener path="${api.http.path}${api.http.version}" doc:name="Listener" config-ref="idm-system-api-httpListenerConfig">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router doc:name="APIkit Router" doc:id="ed5443f4-73e6-49be-90d1-11ef5f6373e0" config-ref="idm-db-system-api-config" />
+        <error-handler ref="api-kit-error-handler" />
+    </flow>
+    <flow name="get:\health:idm-db-system-api-config" doc:id="f3a61299-7c32-4ca9-a36d-4aabf3c74f83">
+        <ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd  http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Get Health Report">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  name: p('system.context'),
+  status: "OK",
+  timestamp: (now() as DateTime) >> p('property.timezone')
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <error-handler ref="business-error-handler" />
+    </flow>
+    <flow name="get:\staff:idm-db-system-api-config" doc:id="d3228c32-7ae1-439a-903f-434a6142804b">
+        <logger level="INFO" doc:name="Start Get Staff Request " doc:id="ef61b69f-a55e-4741-ac76-4357a386f63d" message="Start Get Staff Request " />
+        <logger level="INFO" doc:name="Log Query Parameters" doc:id="825785bd-1223-49cf-a87f-c94a18d8307a" message="#[attributes.queryParams]" />
+        <flow-ref doc:name="impl-process-staff-request:get-staff-contact:subflow" doc:id="8eb885a0-8a9d-4828-a1df-65d222fd962f" name="impl-process-staff-request:get-staff-contact:subflow" />
+        <logger level="INFO" doc:name="End Get Staff Request " doc:id="88fefc5d-d326-49b0-a745-a6abb8c847a7" message="End Get Staff Request " />
+        <error-handler ref="business-error-handler" />
+    </flow>
+</mule>

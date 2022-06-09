@@ -1,0 +1,32 @@
+trigger:
+  branches:
+    include:
+    - main
+    - hotfix/*
+    - release/*
+    - feature/*
+    - bugfix/*
+  paths:
+    exclude:
+    - src/test/postman
+
+variables:
+  apiName: 'idm-db-sapi'
+  version: '1.0.0'
+
+resources:
+  repositories:
+  - repository: azure-devops
+    type: git
+    name: azure-devops
+    ref: refs/heads/main
+extends:
+  template: azure-pipelines-main.yml@azure-devops
+  parameters:
+    apiAssetId: 'idm-db-system-api'
+    apiAssetVersion: 'v1'
+    featureCloudhubApplicationName: $(apiName)-ftr
+    devCloudhubApplicationName: $(apiName)-dev
+    sitCloudhubApplicationName: $(apiName)-sit
+    uatCloudhubApplicationName: $(apiName)-uat
+    prdCloudhubApplicationName: $(apiName)
